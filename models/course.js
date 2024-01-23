@@ -3,18 +3,23 @@ const { Model, DataTypes } = require('sequelize');
 
 module.exports = (sequelize) => {
   class Course extends Model {}
-  User.init({
+  Course.init({
     title: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false
     },
     description: {
-      type: DataTypes.TEXT    
+      type: DataTypes.TEXT,
+      allowNull: false    
     },
     estimatedTime: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false
     },
     materialsNeeded: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false
+
     }
   }, { sequelize });
 
