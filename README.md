@@ -15,8 +15,13 @@ To complete this project, I've used my knowledge of Node.js, Express, REST APIS,
    ```sh
    npm install
    ```
+2. Create database and seed it with initial data
+   
+    ```sh
+   npm run seed
+   ```
 
-2. Start the development server
+3. Start the development server
 
    ```sh
    npm start

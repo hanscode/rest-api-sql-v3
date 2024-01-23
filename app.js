@@ -7,6 +7,26 @@ const morgan = require('morgan');
 // variable to enable global error logging
 const enableGlobalErrorLogging = process.env.ENABLE_GLOBAL_ERROR_LOGGING === 'true';
 
+/**
+ * Testing Section before get started the project
+ */
+
+// importing db instance of sequlize from model/index.js
+const db = require("./models"); // Accessing all Sequelizes methods and functionality
+
+// Test connection to the DB
+// async IIFE
+(async () => {
+  try {
+    await db.sequelize.authenticate();
+    console.log("Connection to the database successful!");
+    db.sequelize.sync();
+    console.log("Sychronized the model with the db");
+  } catch (error) {
+    console.error("Error connecting to the database: ", error);
+  }
+})();
+
 // create the Express app
 const app = express();
 
