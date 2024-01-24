@@ -13,12 +13,15 @@ const router = express.Router();
  * Users Routes
  */
 
-// Route that returns a list of users.
+// Route that returns all properties and values for the currently authenticated User 
+// along with a 200 HTTP status code.
 router.get("/users", authenticateUser, asyncHandler(async (req, res) => {
-    let users = await User.findAll({
-      attributes: ['id', 'firstName', 'lastName', 'emailAddress']
-    });
-    res.json(users);
+  const authenticatedUser = req.currentUser;
+  const userProperties = await User.findOne({
+    attributes: ['id', 'firstName', 'lastName', 'emailAddress'],
+    where: { id: authenticatedUser.id }
+  });
+  res.status(200).json(userProperties);
   })
 );
 
@@ -29,7 +32,7 @@ router.post("/users", asyncHandler(async (req, res) => {
       res
         .status(201)
         .setHeader("Location", "/")
-        .json({ message: "Account successfully created!" });
+        .end();
     } catch (error) {
       console.log("ERROR: ", error);
 
@@ -69,6 +72,12 @@ router.get("/courses", asyncHandler(async (req, res) => {
 router.get("/courses/:id", asyncHandler(async (req, res, next) => {
     const course = await Course.findOne({
       attributes: ['id', 'title', 'description', 'estimatedTime', 'materialsNeeded', 'userId'],
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'firstName', 'lastName', 'emailAddress']
+        },
+      ],
       where: { id: req.params.id }
     });
     if (course) {
