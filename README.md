@@ -25,3 +25,7 @@ To complete this project, I've used my knowledge of Node.js, Express, REST APIS,
 
    ```sh
    npm start
+
+## ✅ Testing via Postman
+
+This project includes a Postman Collection that can be used to test the REST-API application. Open Postman and import the `RESTAPI.postman_collection.json` file.
