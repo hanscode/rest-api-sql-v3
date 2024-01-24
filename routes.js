@@ -4,6 +4,7 @@ const express = require("express");
 const { asyncHandler } = require("./middleware/async-handler");
 const User = require("./models").User;
 const Course = require("./models").Course;
+const { authenticateUser } = require('./middleware/auth-user');
 
 // Construct a router instance.
 const router = express.Router();
@@ -13,18 +14,14 @@ const router = express.Router();
  */
 
 // Route that returns a list of users.
-router.get(
-  "/users",
-  asyncHandler(async (req, res) => {
+router.get("/users", authenticateUser, asyncHandler(async (req, res) => {
     let users = await User.findAll();
     res.json(users);
   })
 );
 
 // Route that creates a new user.
-router.post(
-  "/users",
-  asyncHandler(async (req, res) => {
+router.post("/users", asyncHandler(async (req, res) => {
     try {
       await User.create(req.body);
       res
@@ -32,7 +29,7 @@ router.post(
         .setHeader("Location", "/")
         .json({ message: "Account successfully created!" });
     } catch (error) {
-      console.log("ERROR: ", error.name);
+      console.log("ERROR: ", error);
 
       if (
         error.name === "SequelizeValidationError" ||
@@ -52,9 +49,7 @@ router.post(
  */
 
 // Send a GET request to /courses to return all courses
-router.get(
-  "/courses",
-  asyncHandler(async (req, res) => {
+router.get("/courses", asyncHandler(async (req, res) => {
     const courses = await Course.findAll({
       include: [
         {
@@ -67,9 +62,7 @@ router.get(
 );
 
 // GET individual course detail
-router.get(
-  "/courses/:id",
-  asyncHandler(async (req, res, next) => {
+router.get("/courses/:id", asyncHandler(async (req, res, next) => {
     const course = await Course.findByPk(req.params.id);
     if (course) {
       res.status(200).json(course);
@@ -80,9 +73,7 @@ router.get(
 );
 
 // POST route that will create a new course
-router.post(
-  "/courses",
-  asyncHandler(async (req, res) => {
+router.post( "/courses", authenticateUser, asyncHandler(async (req, res) => {
     try {
       const course = await Course.create(req.body);
       res.status(201).setHeader("Location", `/courses/${course.id}`).end();
@@ -105,7 +96,7 @@ router.post(
 );
 
 // PUT route that will update the corresponding course and return a 204 HTTP status code and no content.
-router.put('/courses/:id', asyncHandler(async (req, res) => {
+router.put('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
   let course;
   try {
     course = await Course.findByPk(req.params.id);
@@ -129,7 +120,7 @@ router.put('/courses/:id', asyncHandler(async (req, res) => {
 }));
 
 // DELETE route that will delete the corresponding course and return a 204 HTTP status code and no content.
-router.delete('/courses/:id', asyncHandler(async (req, res) => {
+router.delete('/courses/:id', authenticateUser, asyncHandler(async (req, res) => {
   let course;
   try {
     course = await Course.findByPk(req.params.id);
